@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/features/auth/presentation/notifiers/user_repository.dart';
 import 'package:flutter_achiver/features/auth/presentation/pages/main_screen.dart';
+import 'package:flutter_achiver/features/projects/data/services/firestore_project_service.dart';
+import 'package:flutter_achiver/features/projects/presentation/pages/add_project.dart';
+import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
 import 'package:flutter_achiver/features/timer/presentation/pages/timer.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +18,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           builder: (_) => UserRepository.instance(),
-        )
+        ),
+        StreamProvider.value(
+          value: projectDBS.streamList(),
+        ),
       ],
           child: MaterialApp(
         title: 'Achiver',
@@ -23,6 +29,10 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
         ),
         home: MainScreen(),
+        routes: {
+          "projects": (_) => ProjectsPage(),
+          "add_project": (_) => AddProjectPage(),
+        },
       ),
     );
   }

@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
           ListTile(
             title: Text("Projects"),
             leading: Image.asset(projectsIcon),
-            onTap: (){},
+            onTap: ()=>Navigator.pushNamed(context, 'projects'),
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),
