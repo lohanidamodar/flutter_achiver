@@ -1,4 +1,4 @@
-package com.popupbits.flutter_achiver
+package com.popupbits.achiver
 
 import android.os.Bundle
 
