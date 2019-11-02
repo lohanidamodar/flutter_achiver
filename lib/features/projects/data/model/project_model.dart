@@ -21,7 +21,7 @@ class Project extends DatabaseItem {
   Map<String,dynamic> toMap() => {
     "title":title,
     "status":statusToString(status),
-    "work_duration":workDuration?.inSeconds,
+    "work_duration":workDuration?.inMinutes,
     "sessions_before_long_break":sessionsBeforeLongBreak,
   };
 }

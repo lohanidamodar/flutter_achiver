@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/pages/home.dart';
 import 'package:flutter_achiver/features/auth/presentation/notifiers/user_repository.dart';
 import 'package:flutter_achiver/features/auth/presentation/pages/welcome_page.dart';
-import 'package:flutter_achiver/features/timer/presentation/pages/home.dart';
 import 'package:provider/provider.dart';
 import './splash.dart';
 
