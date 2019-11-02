@@ -5,6 +5,7 @@ import 'package:flutter_achiver/features/auth/presentation/pages/main_screen.dar
 import 'package:flutter_achiver/features/projects/data/services/firestore_project_service.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/add_project.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
+import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider.value(
           value: projectDBS.streamList(),
+        ),
+        ChangeNotifierProvider(
+          builder: (_) => TimerState(),
         ),
       ],
           child: MaterialApp(
