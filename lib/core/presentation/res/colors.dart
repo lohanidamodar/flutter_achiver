@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 final Color bgColor = Color(0xfff2f2f2);
 final Color borderColor = Color(0xffd6d6d6);
@@ -9,6 +9,7 @@ final fbBgColor=Color(0xff3e68e0);
 final fbFgColor=Color(0xff475993);
 final googleBgColor=Color(0xffd9e7fd);
 final googleFgColor=Color(0xff4487f4);
+final Color secondaryText = Colors.grey.shade700;
 
 final Gradient primaryGradient = LinearGradient(
   colors: [

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
+import 'package:flutter_achiver/features/projects/presentation/widgets/project_dropdown.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
+import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer.dart';
 import 'package:provider/provider.dart';
@@ -45,11 +47,16 @@ class TimerTab extends StatelessWidget {
               const SizedBox(height: 20.0),
               BorderedContainer(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Current Project"),
-                    Text(state.project != null
-                        ? state.project.title
-                        : "No project selected"),
+                    ProjectDropdown(
+                      disabled: state.isRunning,
+                      label: "Current project",
+                      initialProject: state.project,
+                      onSelectProject: (project) {
+                        state.project = project;
+                      },
+                    ),
                     Text("work sessions completed today"),
                     Text("Daily average (Last 7 Days)"),
                   ],

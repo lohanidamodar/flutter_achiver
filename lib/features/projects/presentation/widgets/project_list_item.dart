@@ -19,7 +19,7 @@ class ProjectListItem extends StatelessWidget {
       ),
       title: Text(project.title),
       subtitle: Text("${project.workDuration.inMinutes} minutes"),
-      onTap: onEdit,
+      onTap: onTap,
       onLongPress: onEdit,
       selected: isSelected,
       trailing: onDelete != null ? IconButton(icon: Icon(Icons.delete), onPressed: onDelete,) : null,

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 import 'dart:async';
-
 import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
+import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
+import 'package:provider/provider.dart';
 
 class CDTimer extends StatefulWidget {
   final PomoTimer timer;
@@ -55,6 +56,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
       widget.timer.timerType == TimerType.WORK
           ? widget.workComplete()
           : widget.breakComplete();
+      Provider.of<TimerState>(context).isRunning = false;
       setState(() {
         statusText = 'Finished';
       });
@@ -88,18 +90,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     }
   }
 
-  /* String _printDuration(Duration duration) {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
-    }
-
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-  } */
-
-  @override
+  @override 
   void initState() {
     super.initState();
     final duration = durationByTimerType(widget.timer.timerType);
@@ -116,6 +107,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     _controller.dispose();
     stopwatch.stop();
     timer.cancel();
+    Provider.of<TimerState>(context).isRunning = false;
     super.dispose();
   }
 
@@ -124,6 +116,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     _controller.reset();
     stopwatch.stop();
     stopwatch.reset();
+    Provider.of<TimerState>(context).isRunning = false;
   }
 
   @override
@@ -167,6 +160,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
                 print('--Running--');
                 begin = 50.0;
                 stopwatch.start();
+                Provider.of<TimerState>(context).isRunning = true;
                 _controller.forward();
                 updateClock();
               },

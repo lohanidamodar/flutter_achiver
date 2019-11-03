@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/add_project_fab.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/projects_tab.dart';
+import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer_tab.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(milliseconds: 200),
         child: _getSelectedTab(),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: Provider.of<TimerState>(context).isRunning ? null : BottomNavigationBar(
         currentIndex: _currentPage,
         type: BottomNavigationBarType.fixed,
         items: [

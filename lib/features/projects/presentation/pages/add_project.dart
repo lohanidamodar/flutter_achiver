@@ -6,6 +6,8 @@ import 'package:flutter_achiver/core/presentation/res/styles.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 import 'package:flutter_achiver/features/projects/data/services/firestore_project_service.dart';
+import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
+import 'package:provider/provider.dart';
 
 class AddProjectPage extends StatefulWidget {
   final Project project;
@@ -165,11 +167,15 @@ class _AddProjectPageState extends State<AddProjectPage> {
                         processing = true;
                       });
                       if (widget.project != null) {
-                        await projectDBS.updateItem(Project(
+                        Project updated = Project(
                             id: widget.project.id,
                             title: _title.text,
                             status: _status,
-                            workDuration: _workDuration));
+                            workDuration: _workDuration);
+                        await projectDBS.updateItem(updated);
+                        if(Provider.of<TimerState>(context).project?.id == widget.project.id) {
+                          Provider.of<TimerState>(context).project = updated;
+                        }
                       } else {
                         await projectDBS.createItem(Project(
                             title: _title.text,
