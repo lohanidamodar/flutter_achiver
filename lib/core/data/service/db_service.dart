@@ -11,6 +11,7 @@ class DatabaseService<T extends DatabaseItem> {
 
   Future<T> getSingle(String id) async {
     var snap = await _db.collection(collection).document(id).get();
+    if(!snap.exists) return null;
     return fromDS(snap.documentID,snap.data);
   }
 
@@ -29,17 +30,24 @@ class DatabaseService<T extends DatabaseItem> {
         list.documents.map((doc) => fromDS(doc.documentID,doc.data)).toList());
   }
 
-  Future<DocumentReference> createItem(T item) {
-    return _db
+  Future<dynamic> createItem(T item, {String id}) {
+    if(id != null) {
+      return _db
         .collection(collection)
-        .add(toMap(item));
+        .document(id)
+        .setData(toMap(item));
+    }else{
+      return _db
+          .collection(collection)
+          .add(toMap(item));
+    }
   }
 
   Future<void> updateItem(T item) {
     return _db
       .collection(collection)
       .document(item.id)
-      .setData(toMap(item));
+      .setData(toMap(item),merge: true);
   }
 
   Future<void> removeItem(String id) {

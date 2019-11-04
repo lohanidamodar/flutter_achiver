@@ -34,16 +34,28 @@ enum ProjectStatus {
 }
 
 String timerTypeToString(TimerType type) {
-    switch(type) {
-      case TimerType.BREAK:
-        return "Short Break";
-      case TimerType.LONG_BREAK:
-        return "Long Break";
-      case TimerType.WORK:
-      default:
-        return "Work";
-    }
+  switch (type) {
+    case TimerType.BREAK:
+      return "Short Break";
+    case TimerType.LONG_BREAK:
+      return "Long Break";
+    case TimerType.WORK:
+    default:
+      return "Work";
   }
+}
+
+TimerType stringToTimerType(String type) {
+  switch (type) {
+    case "Short Break":
+      return TimerType.BREAK;
+    case "Long Break":
+      return TimerType.LONG_BREAK;
+    case "Work":
+    default:
+      return TimerType.WORK;
+  }
+}
 
 String statusToIcon(ProjectStatus status) {
   switch (status) {
@@ -56,7 +68,6 @@ String statusToIcon(ProjectStatus status) {
     default:
       return projectOngoingIcon;
   }
-
 }
 
 String statusToString(ProjectStatus status) {

@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_achiver/features/auth/data/model/user.dart';
+import 'package:flutter_achiver/features/auth/data/service/firestore_user_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
@@ -7,6 +9,7 @@ enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 class UserRepository with ChangeNotifier {
   FirebaseAuth _auth;
   FirebaseUser _user;
+  User _fsUser;
   GoogleSignIn _googleSignIn;
   Status _status = Status.Uninitialized;
 
@@ -18,6 +21,7 @@ class UserRepository with ChangeNotifier {
 
   Status get status => _status;
   FirebaseUser get user => _user;
+  User get fsUser => _fsUser;
 
   Future<bool> signIn(String email, String password) async {
     try {
@@ -66,6 +70,15 @@ class UserRepository with ChangeNotifier {
       _status = Status.Unauthenticated;
     } else {
       _user = firebaseUser;
+      _fsUser = await userDBS.getSingle(_user.uid);
+      if(_fsUser == null) {
+        _fsUser = User(
+          id: _user.uid,
+          email: _user.email,
+          name: _user.displayName,
+        );
+        await userDBS.createItem(_fsUser,id: _user.uid);
+      }
       _status = Status.Authenticated;
     }
     notifyListeners();

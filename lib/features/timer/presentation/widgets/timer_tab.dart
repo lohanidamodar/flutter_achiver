@@ -23,23 +23,11 @@ class TimerTab extends StatelessWidget {
                     CDTimer(
                       project: state.project,
                       timer: state.currentTimer,
-                      workComplete: () { 
-                        print("--work complete--");
-                        state.currentTimer = PomoTimer(
-                          timerDuration: state.currentTimer.timerDuration,
-                          timerType: TimerType.BREAK,
-                        );
-                      },
+                      workComplete: state.workComplete,
                       workCanceled: () {
                         print("--work canceled--");
                       },
-                      breakComplete: () {
-                        print("--break complete/canceled/skip--");
-                        state.currentTimer = PomoTimer(
-                          timerDuration: state.currentTimer.timerDuration,
-                          timerType: TimerType.WORK,
-                        );
-                      },
+                      breakComplete: state.breakComplete,
                     ),
                   ],
                 ),
@@ -57,8 +45,12 @@ class TimerTab extends StatelessWidget {
                         state.project = project;
                       },
                     ),
-                    Text("work sessions completed today"),
-                    Text("Daily average (Last 7 Days)"),
+                    ListTile(
+                      title: Text("work sessions completed today"),
+                      trailing: Text("${state.workSessionsCompletedToday}"),
+                    ),
+                    ListTile(title: Text("Daily average (Last 7 Days)"),
+                    ),
                   ],
                 ),
               )

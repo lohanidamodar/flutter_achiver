@@ -107,7 +107,6 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     _controller.dispose();
     stopwatch.stop();
     timer.cancel();
-    Provider.of<TimerState>(context).isRunning = false;
     super.dispose();
   }
 

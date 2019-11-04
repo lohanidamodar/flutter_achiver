@@ -5,5 +5,5 @@ class PomoTimer {
   final TimerDuration timerDuration;
   final TimerType timerType;
 
-  PomoTimer({this.timerDuration = const TimerDuration(), this.timerType = TimerType.WORK});
+  const PomoTimer({this.timerDuration = const TimerDuration(), this.timerType = TimerType.WORK});
 }

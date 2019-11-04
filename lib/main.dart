@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         StreamProvider.value(
           value: projectDBS.streamList(),
         ),
-        ChangeNotifierProvider(
-          builder: (_) => TimerState(),
+        ChangeNotifierProxyProvider<UserRepository, TimerState>(
+          builder: (context,user,timerState) => TimerState(user: user.fsUser),
         ),
       ],
           child: MaterialApp(
