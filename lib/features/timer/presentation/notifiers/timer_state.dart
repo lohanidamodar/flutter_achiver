@@ -1,3 +1,5 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/auth/data/model/user.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_achiver/features/timer/presentation/model/timer_duration
 class TimerState extends ChangeNotifier {
   final String uid;
   final User user;
+  static AudioCache player = AudioCache(prefix: "audios/");
   Project _project;
   PomoTimer _currentTimer;
   bool _timerRunning;
@@ -52,6 +55,7 @@ class TimerState extends ChangeNotifier {
 
   workComplete() {
     _workSessionsCompletedToday++;
+    player.play("work-alarm.mp3");
     WorkLog log = WorkLog(
       date: DateTime.now(),
       duration: _currentTimer.timerDuration.work,
@@ -71,6 +75,15 @@ class TimerState extends ChangeNotifier {
   }
 
   breakComplete() {
+    player.play("break-alarm.mp3");
+    _breakOver();
+  }
+
+  breakCanceled() {
+    _breakOver();
+  }
+
+  _breakOver() {
     _currentTimer = PomoTimer(
       timerDuration: _currentTimer.timerDuration,
       timerType: TimerType.WORK,
@@ -80,6 +93,7 @@ class TimerState extends ChangeNotifier {
   }
 
   TimerState({this.user, this.uid}) {
+    player.loadAll(["work-alarm.mp3","break-alarm.mp3"]);
     _timerRunning = false;
     _currentTimer = PomoTimer(
         timerDuration: TimerDuration(
@@ -95,7 +109,6 @@ class TimerState extends ChangeNotifier {
 
   _loadFromDatabase() {
     if (user == null) return;
-    //TODO load from firestore
     if (user.savedState.isNotEmpty) {
       _currentTimer = PomoTimer(
         timerDuration: TimerDuration(
@@ -116,7 +129,6 @@ class TimerState extends ChangeNotifier {
 
   _updateStateToDatabase() {
     if (user == null) return;
-    //TODO save to firestore
     User updated = User(
         name: user.name,
         email: user.email,

@@ -27,6 +27,7 @@ class TimerTab extends StatelessWidget {
                       workCanceled: () {
                         print("--work canceled--");
                       },
+                      breakCanceled: state.breakCanceled,
                       breakComplete: state.breakComplete,
                     ),
                   ],

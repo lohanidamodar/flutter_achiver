@@ -12,6 +12,7 @@ dependencies:
   provider: ^3.1.0+1
   google_sign_in: ^4.0.11
   cloud_firestore: ^0.12.9+6
+  audioplayers: ^0.13.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -23,3 +24,4 @@ flutter:
   assets:
    - assets/
    - assets/icons/
+   - assets/audios/

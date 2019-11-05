@@ -11,17 +11,19 @@ class CDTimer extends StatefulWidget {
   final PomoTimer timer;
   final Project project;
   final Function breakComplete;
+  final Function breakCanceled;
   final Function workComplete;
   final Function workCanceled;
 
-  CDTimer(
-      {Key key,
-      @required this.timer,
-      this.project,
-      @required this.breakComplete,
-      @required this.workCanceled,
-      @required this.workComplete})
-      : super(key: key);
+  CDTimer({
+    Key key,
+    @required this.timer,
+    this.project,
+    @required this.breakComplete,
+    @required this.breakCanceled,
+    @required this.workCanceled,
+    @required this.workComplete,
+  }) : super(key: key);
 
   @override
   _CDTimerState createState() => _CDTimerState();
@@ -90,7 +92,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     }
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
     final duration = durationByTimerType(widget.timer.timerType);

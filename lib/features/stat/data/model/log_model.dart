@@ -17,7 +17,6 @@ class WorkLog extends DatabaseItem{
     super(id);
 
   Map<String,dynamic> toMap() => {
-    "id": id,
     "project_id": project.id,
     "project": project.toMap(),
     "duration": duration?.inMinutes,
