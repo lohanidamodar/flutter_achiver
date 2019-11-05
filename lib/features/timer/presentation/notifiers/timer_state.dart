@@ -3,6 +3,8 @@ import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/auth/data/model/user.dart';
 import 'package:flutter_achiver/features/auth/data/service/firestore_user_service.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
+import 'package:flutter_achiver/features/stat/data/model/log_model.dart';
+import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
 
@@ -50,6 +52,12 @@ class TimerState extends ChangeNotifier {
 
   workComplete() {
     _workSessionsCompletedToday++;
+    WorkLog log = WorkLog(
+      date: DateTime.now(),
+      duration: _currentTimer.timerDuration.work,
+      project: _project,
+    );
+    logDBS.createItem(log);
     _currentTimer = PomoTimer(
       timerDuration: _currentTimer.timerDuration,
       timerType:

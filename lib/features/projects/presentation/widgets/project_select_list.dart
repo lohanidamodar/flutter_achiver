@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 
 import 'project_list_item.dart';
@@ -24,10 +25,11 @@ class _ProjectSelectListState extends State<ProjectSelectList> {
 
   @override
   Widget build(BuildContext context) {
+    List<Project> projects = widget.projects.where((project) => project.status == ProjectStatus.ONGOING).toList();
     return ListView.separated(
-          itemCount: widget.projects.length,
+          itemCount: projects.length,
           itemBuilder: (context,index) {
-            Project project = widget.projects[index];
+            Project project = projects[index];
             return ProjectListItem(
               project: project,
               isSelected: project.id == _selectedProject?.id,
