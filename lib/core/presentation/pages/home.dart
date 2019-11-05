@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/add_project_fab.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/projects_tab.dart';
+import 'package:flutter_achiver/features/settings/presentation/widgets/settings_tab.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer_tab.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class _HomePageState extends State<HomePage> {
     TimerTab(),
     ProjectsTab(),
     Container(child: Text("Activity"),),
-    Container(child: Text("Settings"),),
+    SettingsTab(),
   ];
   int _currentPage;
 

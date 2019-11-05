@@ -72,15 +72,21 @@ class UserRepository with ChangeNotifier {
       _user = firebaseUser;
       _fsUser = await userDBS.getSingle(_user.uid);
       if(_fsUser == null) {
-        _fsUser = User(
+        var updatedUser = User(
           id: _user.uid,
           email: _user.email,
           name: _user.displayName,
         );
-        await userDBS.createItem(_fsUser,id: _user.uid);
+        await updateUser(updatedUser);
       }
       _status = Status.Authenticated;
     }
     notifyListeners();
+  }
+
+  updateUser(User updatedUser, {bool notify = false}) async {
+    _fsUser = updatedUser;
+    await userDBS.createItem(_fsUser, id: _fsUser.id);
+    if(notify) notifyListeners();
   }
 }

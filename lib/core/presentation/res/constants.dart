@@ -20,6 +20,36 @@ const List<Duration> durations = [
   Duration(minutes: 150),
   Duration(minutes: 180),
 ];
+const List<Duration> longBreakDurations = [
+  Duration(minutes: 5),
+  Duration(minutes: 10),
+  Duration(minutes: 15),
+  Duration(minutes: 17),
+  Duration(minutes: 20),
+  Duration(minutes: 25),
+  Duration(minutes: 30),
+  Duration(minutes: 35),
+  Duration(minutes: 40),
+  Duration(minutes: 45),
+  Duration(minutes: 50),
+  Duration(minutes: 60),
+];
+const List<Duration> shortBreakDurations = [
+  Duration(minutes: 1),
+  Duration(minutes: 2),
+  Duration(minutes: 3),
+  Duration(minutes: 4),
+  Duration(minutes: 5),
+  Duration(minutes: 6),
+  Duration(minutes: 7),
+  Duration(minutes: 8),
+  Duration(minutes: 9),
+  Duration(minutes: 10),
+  Duration(minutes: 12),
+  Duration(minutes: 15),
+  Duration(minutes: 17),
+  Duration(minutes: 20),
+];
 
 enum TimerType {
   WORK,
