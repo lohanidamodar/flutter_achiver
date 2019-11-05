@@ -31,9 +31,9 @@ class _SettingsTabState extends State<SettingsTab> {
   Widget build(BuildContext context) {
     ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return Consumer<UserRepository>(
-      builder: (context, user,child) {
+      builder: (context, userRepo,child) {
         if(!loaded) {
-          Setting setting = user.fsUser?.setting;
+          Setting setting = userRepo.fsUser?.setting;
           _workDuration = setting?.work;
           _shortBreak = setting?.shortBreak;
           _longBreak = setting?.longBreak;
@@ -171,6 +171,13 @@ class _SettingsTabState extends State<SettingsTab> {
                 },
               ),
             ),
+            const SizedBox(height: 10.0),
+            BorderedContainer(
+              padding: const EdgeInsets.all(0),
+              child: ListTile(title: Text("Log out"),
+                onTap: () => userRepo.signOut(),
+              ),
+            ),
             const SizedBox(height: 16.0),
             processing ? Center(child: CircularProgressIndicator()) : OutlineButton(
               child: Text("Save"),
@@ -178,7 +185,6 @@ class _SettingsTabState extends State<SettingsTab> {
                 setState(() {
                   processing = true;
                 });
-                UserRepository userRepo = Provider.of<UserRepository>(context);
                 User user =  userRepo.fsUser;
                 User updated = User(
                   name: user.name,
