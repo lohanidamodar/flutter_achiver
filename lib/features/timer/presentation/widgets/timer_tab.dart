@@ -13,6 +13,7 @@ class TimerTab extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               BorderedContainer(
                 child: Column(
@@ -31,26 +32,31 @@ class TimerTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20.0),
+              Text("Selected project"),
+              const SizedBox(height: 5.0),
               BorderedContainer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ProjectDropdown(
-                      disabled: state.isRunning,
-                      label: "Current project",
-                      initialProject: state.project,
-                      onSelectProject: (project) {
-                        state.project = project;
-                      },
-                    ),
-                    ListTile(
+                padding: const EdgeInsets.all(0),
+                child: ProjectDropdown(
+                  disabled: state.isRunning,
+                  label: "Project",
+                  initialProject: state.project,
+                  onSelectProject: (project) {
+                    state.project = project;
+                  },
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              BorderedContainer(
+                padding: const EdgeInsets.all(0),
+                child: ListTile(
                       title: Text("work sessions completed today"),
                       trailing: Text("${state.workSessionsCompletedToday}"),
                     ),
-                    ListTile(title: Text("Daily average (Last 7 Days)"),
+              ),
+              BorderedContainer(
+                padding: const EdgeInsets.all(0),
+                child: ListTile(title: Text("Daily average (Last 7 Days)"),
                     ),
-                  ],
-                ),
               )
             ],
           ),
