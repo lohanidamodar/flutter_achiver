@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/data/res/constants.dart';
 import 'package:flutter_achiver/core/data/service/db_service.dart';
+import 'package:flutter_achiver/core/presentation/notifiers/theme_notifier.dart';
 import 'package:flutter_achiver/core/presentation/res/colors.dart';
 import 'package:flutter_achiver/features/auth/presentation/notifiers/user_repository.dart';
 import 'package:flutter_achiver/features/auth/presentation/pages/main_screen.dart';
@@ -20,6 +21,9 @@ class ProvidedApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          builder: (_) => ThemeNotifier(),
+        ),
+        ChangeNotifierProvider(
           builder: (_) => UserRepository.instance(),
         ),
         ChangeNotifierProxyProvider<UserRepository, TimerState>(
@@ -38,6 +42,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Provider.of<ThemeNotifier>(context).currentTheme;
     return Consumer<UserRepository>(builder: (context, user, child) {
       if(user.user!=null) {
         initWorkLogDBS(user.user.uid);
@@ -51,10 +56,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Achiver',
-          theme: ThemeData(
-            scaffoldBackgroundColor: bgColor,
-            primarySwatch: Colors.pink,
-          ),
+          theme: theme,
           home: MainScreen(),
           routes: {
             "projects": (_) => ProjectsPage(),

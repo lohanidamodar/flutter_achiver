@@ -134,11 +134,10 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     return Container(
       child: Column(
         children: <Widget>[
-          Text("Motivation Text"),
           if (stopwatch.isRunning) ...[
             Text(
               timeText,
-              style: TextStyle(fontSize: 54.0, color: Colors.black),
+              style: TextStyle(fontSize: 54.0),
             ),
             IconButton(
               icon: Icon(Icons.clear),

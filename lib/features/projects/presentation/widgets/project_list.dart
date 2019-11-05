@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/core/presentation/widgets/confirm_dialog.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 import 'package:flutter_achiver/features/projects/data/services/firestore_project_service.dart';
@@ -15,21 +16,32 @@ class ProjectList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<List<Project>>(
       builder: (context, projects, child) {
-        if(projects == null) return Center(child: CircularProgressIndicator());
-        if(projects.isEmpty) return Container(child: Text("No projects found"),);
+        if (projects == null) return Center(child: CircularProgressIndicator());
+        if (projects.isEmpty)
+          return Container(
+            child: Text("No projects found"),
+          );
         return ListView.separated(
+          padding: const EdgeInsets.all(16.0),
           itemCount: projects.length,
-          itemBuilder: (context,index) {
+          itemBuilder: (context, index) {
             Project project = projects[index];
-            return ProjectListItem(
-              project: project,
-              onDelete: () => _onDelete(context,project),
-              onEdit: () => Navigator.push(context, MaterialPageRoute(
-                builder: (_) => AddProjectPage(project: project,),
-              )),
+            return BorderedContainer(
+              padding: const EdgeInsets.all(0),
+              child: ProjectListItem(
+                project: project,
+                onDelete: () => _onDelete(context, project),
+                onEdit: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddProjectPage(
+                        project: project,
+                      ),
+                    )),
+              ),
             );
           },
-          separatorBuilder: (context,index) => const SizedBox(height: 10.0),
+          separatorBuilder: (context, index) => const SizedBox(height: 10.0),
         );
       },
     );

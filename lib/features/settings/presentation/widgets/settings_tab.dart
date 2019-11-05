@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/notifiers/theme_notifier.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/core/presentation/res/styles.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
@@ -28,6 +29,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return Consumer<UserRepository>(
       builder: (context, user,child) {
         if(!loaded) {
@@ -41,6 +43,11 @@ class _SettingsTabState extends State<SettingsTab> {
         return ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
+            SwitchListTile(
+              value: themeNotifier.darkTheme,
+              onChanged: (val) => themeNotifier.toggleTheme(),
+              title: Text("Dark Theme"),
+            ),
             Text(
               "Work session duration",
               style: labelStyle,

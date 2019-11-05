@@ -65,15 +65,7 @@ class _AddProjectPageState extends State<AddProjectPage> {
                   (value.isEmpty) ? "Please Enter title" : null,
               style: style,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(16.0),
                 hintText: "please enter title",
-                filled: true,
-                fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: borderColor),),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: borderColor),
-                ),
               ),
             ),
             const SizedBox(height: 16.0),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/res/colors.dart';
-import 'package:flutter_achiver/core/presentation/res/styles.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/project_select_list.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +34,7 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
     return InkWell(
       onTap: widget.disabled ? null : _showSelectProject,
       child: Container(
-        color: widget.disabled ? Colors.grey.shade200 : Colors.transparent,
+        color: widget.disabled ? Theme.of(context).disabledColor : Colors.transparent,
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: <Widget>[
@@ -45,12 +44,12 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
                 children: <Widget>[
                   Text(
                     widget.label ?? "selected project",
-                    style: labelStyle,
+                    style: Theme.of(context).textTheme.button,
                   ),
                   const SizedBox(height: 5.0),
                   Text(
                     _selectedProject?.title ?? "no project selected",
-                    style: titleStyle,
+                    style: Theme.of(context).textTheme.title,
                   ),
                 ],
               ),
@@ -69,9 +68,17 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
     Project project = await showDialog<Project>(
       context: context,
       builder: (_) => Dialog(
+        backgroundColor: Theme.of(context).backgroundColor,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text("Select project"),
+            ListTile(
+              title: Text("Select Project"),
+              trailing: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
             Expanded(
                 child: ProjectSelectList(
               onTap: (project) => Navigator.pop(context, project),

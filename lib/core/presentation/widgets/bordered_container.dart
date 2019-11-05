@@ -21,29 +21,27 @@ class BorderedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding ?? const EdgeInsets.all(16.0),
-      width: double.infinity,
-      height: height,
-      margin: margin,
-      decoration: BoxDecoration(
-        border: Border.all(color: borderColor, width: 0.5),
-        borderRadius: BorderRadius.circular(4.0),
-        color: color != null ? color : Colors.white,
+    return Card(
+      color: color,
+      child: Container(
+        padding: padding ?? const EdgeInsets.all(16.0),
+        width: double.infinity,
+        height: height,
+        margin: margin,
+        child: title == null
+            ? child
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0),
+                  ),
+                  if (child != null) ...[const SizedBox(height: 10.0), child]
+                ],
+              ),
       ),
-      child: title == null
-          ? child
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0),
-                ),
-                if (child != null) ...[const SizedBox(height: 10.0), child]
-              ],
-            ),
     );
   }
 }

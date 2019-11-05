@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
+import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/features/projects/data/model/project_model.dart';
 
 import 'project_list_item.dart';
@@ -9,7 +10,12 @@ class ProjectSelectList extends StatefulWidget {
   final Project selectedProject;
   final Function(Project) onTap;
 
-  const ProjectSelectList({Key key, @required this.projects, this.selectedProject,@required this.onTap}) : super(key: key);
+  const ProjectSelectList(
+      {Key key,
+      @required this.projects,
+      this.selectedProject,
+      @required this.onTap})
+      : super(key: key);
   @override
   _ProjectSelectListState createState() => _ProjectSelectListState();
 }
@@ -18,30 +24,37 @@ class _ProjectSelectListState extends State<ProjectSelectList> {
   Project _selectedProject;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _selectedProject = widget.selectedProject;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Project> projects = widget.projects.where((project) => project.status == ProjectStatus.ONGOING).toList();
+    List<Project> projects = widget.projects
+        .where((project) => project.status == ProjectStatus.ONGOING)
+        .toList();
     return ListView.separated(
-          itemCount: projects.length,
-          itemBuilder: (context,index) {
-            Project project = projects[index];
-            return ProjectListItem(
-              project: project,
-              isSelected: project.id == _selectedProject?.id,
-              onTap: (){
-                setState(() {
-                  _selectedProject = project;
-                  widget.onTap(project);
-                });
-              },
-            );
-          },
-          separatorBuilder: (context,index) => const SizedBox(height: 10.0),
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(8.0),
+      itemCount: projects.length,
+      itemBuilder: (context, index) {
+        Project project = projects[index];
+        return BorderedContainer(
+          padding: const EdgeInsets.all(0),
+          child: ProjectListItem(
+            project: project,
+            isSelected: project.id == _selectedProject?.id,
+            onTap: () {
+              setState(() {
+                _selectedProject = project;
+                widget.onTap(project);
+              });
+            },
+          ),
         );
+      },
+      separatorBuilder: (context, index) => const SizedBox(height: 10.0),
+    );
   }
 }

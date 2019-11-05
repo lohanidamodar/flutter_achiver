@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/project_dropdown.dart';
-import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
-import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +11,7 @@ class TimerTab extends StatelessWidget {
     return Consumer<TimerState>(
       builder: (context, state, child) {
         return Container(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
               BorderedContainer(
