@@ -13,6 +13,7 @@ dependencies:
   google_sign_in: ^4.0.11
   cloud_firestore: ^0.12.9+6
   audioplayers: ^0.13.2
+  android_alarm_manager: ^0.4.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
