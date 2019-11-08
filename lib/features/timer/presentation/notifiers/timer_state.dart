@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:isolate';
+
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/auth/data/model/user.dart';
@@ -9,16 +12,55 @@ import 'package:flutter_achiver/features/stat/data/model/log_model.dart';
 import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
+
+alarmCallback() async {
+  final DateTime now = DateTime.now();
+  final int isolateId = Isolate.current.hashCode;
+  print("[$now] Hello, world! isolate=$isolateId function='$alarmCallback'");
+  await _initNotifications();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await notifications.initialize(
+      InitializationSettings(AndroidInitializationSettings('app_icon'), null));
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'com.popupbits.achiver',
+      'Achiver',
+      'Achiver - Pomodoro timer plus time tracker',
+      importance: Importance.Max,
+      priority: Priority.High,
+      ticker: 'achiver');
+  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await notifications.show(
+    0,
+    prefs.getString("notification_title"),
+    prefs.getString("notification_details"),
+    platformChannelSpecifics,
+    payload: 'timer payload',
+  );
+}
+
+_initNotifications() async {
+  
+}
 
 class TimerState extends ChangeNotifier {
-  final String uid;
-  final User user;
+  User user;
   static AudioCache player = AudioCache(prefix: "audios/");
   Project _project;
   PomoTimer _currentTimer;
   bool _timerRunning;
   DateTime _today;
+  DateTime timerStartedAt;
   int _workSessionsCompletedToday;
+  final int alarmId = 1;
+  SharedPreferences prefs;
+  final String timerKey = "running_timer";
+  Duration elapsed;
 
   Project get project => _project;
   PomoTimer get currentTimer => _currentTimer;
@@ -31,10 +73,11 @@ class TimerState extends ChangeNotifier {
     notifyListeners();
   }
 
-  set isRunning(bool val) {
+  /* set isRunning(bool val) {
     _timerRunning = val;
+    timerStartedAt = DateTime.now();
     notifyListeners();
-  }
+  } */
 
   set project(Project project) {
     _project = project;
@@ -47,14 +90,38 @@ class TimerState extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setUser(User upuser) {
+    user = upuser;
+    initWorkLogDBS(user.id);
+    _loadFromDatabase();
+    loadTimerFromPrefs();
+  }
+
   set currentTimer(PomoTimer timer) {
     _currentTimer = timer;
     _updateStateToDatabase();
     notifyListeners();
   }
 
+  timerSessionsFromSettings(PomoTimer timer) {
+    _currentTimer = timer;
+    notifyListeners();
+  }
+
+  timerStarted(Duration duration) {
+    setAlarm(duration, alarmCallback);
+    _timerRunning = true;
+    timerStartedAt = DateTime.now();
+    _saveTimerToPrefs();
+    notifyListeners();
+  }
+
   workComplete() {
     _workSessionsCompletedToday++;
+    timerStartedAt = null;
+    _timerRunning = false;
+    elapsed = Duration.zero;
+    _clearTimerFromPrefs();
     player.play("work-alarm.mp3");
     WorkLog log = WorkLog(
       date: DateTime.now(),
@@ -74,13 +141,42 @@ class TimerState extends ChangeNotifier {
     notifyListeners();
   }
 
+  workCanceled() {
+    elapsed = Duration.zero;
+    timerStartedAt = null;
+    _timerRunning = false;
+    _clearTimerFromPrefs();
+    cancelAlarm();
+    notifyListeners();
+  }
+
   breakComplete() {
+    elapsed = Duration.zero;
+    timerStartedAt = null;
     player.play("break-alarm.mp3");
+    _timerRunning = false;
+    _clearTimerFromPrefs();
     _breakOver();
   }
 
   breakCanceled() {
+    elapsed = Duration.zero;
+    timerStartedAt = null;
+    _timerRunning = false;
+    _clearTimerFromPrefs();
     _breakOver();
+    cancelAlarm();
+  }
+
+  setAlarm(Duration delay, Function callback) async {
+    prefs.setString("notification_title", "${timerTypeToString(_currentTimer.timerType)} session completed.");
+    prefs.setString("notification_details", "Your ${timerTypeToString(_currentTimer.timerType)} session has successfully completed.");
+    await AndroidAlarmManager.oneShot(delay, alarmId, callback,
+        alarmClock: true, exact: true);
+  }
+
+  cancelAlarm() async {
+    await AndroidAlarmManager.cancel(alarmId);
   }
 
   _breakOver() {
@@ -92,9 +188,11 @@ class TimerState extends ChangeNotifier {
     notifyListeners();
   }
 
-  TimerState({this.user, this.uid}) {
-    player.loadAll(["work-alarm.mp3","break-alarm.mp3"]);
+  TimerState({this.user}) {
+    print("--init timer state--");
+    player.loadAll(["work-alarm.mp3", "break-alarm.mp3"]);
     _timerRunning = false;
+    elapsed = Duration.zero;
     _currentTimer = PomoTimer(
         timerDuration: TimerDuration(
       work: Duration(seconds: 10),
@@ -105,6 +203,58 @@ class TimerState extends ChangeNotifier {
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     _workSessionsCompletedToday = 0;
     _loadFromDatabase();
+    _initSharedPrefs();
+  }
+
+  _initSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    loadTimerFromPrefs();
+  }
+
+  void loadTimerFromPrefs() {
+    if (user == null) return;
+    String tm = prefs.getString(timerKey);
+    if (tm == null) return;
+    Map<String, dynamic> tms = json.decode(tm);
+    DateTime startedAt = DateTime.fromMillisecondsSinceEpoch(tms["started_at"]);
+    TimerType type = stringToTimerType(tms["timer_type"]);
+    Duration rtd = Duration(minutes: tms["duration"]);
+    print(DateTime.now());
+    print(startedAt);
+    print("difference: " +
+        DateTime.now().difference(startedAt).inSeconds.toString());
+    print("total duration: " + rtd.inSeconds.toString());
+    Duration el = DateTime.now().difference(startedAt);
+    if (el.inSeconds < rtd.inSeconds) {
+      timerStartedAt = startedAt;
+      elapsed = el;
+      _currentTimer = PomoTimer(
+        timerDuration: currentTimer.timerDuration,
+        timerType: type,
+      );
+      _timerRunning = true;
+      notifyListeners();
+    } else {
+      if (type == TimerType.WORK)
+        workComplete();
+      else
+        breakComplete();
+    }
+  }
+
+  Future<bool> _saveTimerToPrefs() async {
+    Map<String, dynamic> tms = {
+      "duration": durationByTimerType(
+              currentTimer.timerType, currentTimer.timerDuration)
+          .inMinutes,
+      "started_at": timerStartedAt.millisecondsSinceEpoch,
+      "timer_type": timerTypeToString(currentTimer.timerType),
+    };
+    return await prefs.setString(timerKey, json.encode(tms));
+  }
+
+  _clearTimerFromPrefs() async {
+    await prefs.remove(timerKey);
   }
 
   _loadFromDatabase() {
@@ -113,8 +263,8 @@ class TimerState extends ChangeNotifier {
       _currentTimer = PomoTimer(
         timerDuration: TimerDuration(
           work: Duration(minutes: user.savedState["work_duration"]),
-          shortBreak: Duration(minutes: user.savedState["short_break"]),
-          longBreak: Duration(minutes: user.savedState["long_break"]),
+          shortBreak: user.setting.shortBreak,
+          longBreak: user.setting.longBreak,
         ),
         timerType: stringToTimerType(user.savedState["timer_type"]),
       );
@@ -136,8 +286,6 @@ class TimerState extends ChangeNotifier {
         setting: user.setting,
         savedState: <String, dynamic>{
           "work_duration": _currentTimer.timerDuration.work.inMinutes,
-          "short_break": _currentTimer.timerDuration.shortBreak.inMinutes,
-          "long_break": _currentTimer.timerDuration.longBreak.inMinutes,
           "timer_type": timerTypeToString(_currentTimer.timerType),
           "project_id": _project?.id,
           "project": _project?.toMap(),

@@ -6,6 +6,9 @@ import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dar
 import 'package:flutter_achiver/features/auth/data/model/user.dart';
 import 'package:flutter_achiver/features/auth/presentation/notifiers/user_repository.dart';
 import 'package:flutter_achiver/features/settings/data/model/setting.dart';
+import 'package:flutter_achiver/features/timer/presentation/model/pomo_timer_model.dart';
+import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
+import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTab extends StatefulWidget {
@@ -32,7 +35,7 @@ class _SettingsTabState extends State<SettingsTab> {
     ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return Consumer<UserRepository>(
       builder: (context, userRepo,child) {
-        if(!loaded) {
+        if(userRepo.fsUser != null && !loaded) {
           Setting setting = userRepo.fsUser?.setting;
           _workDuration = setting?.work;
           _shortBreak = setting?.shortBreak;
@@ -187,8 +190,8 @@ class _SettingsTabState extends State<SettingsTab> {
                 });
                 User user =  userRepo.fsUser;
                 User updated = User(
-                  name: user.name,
                   email: user.email,
+                  name: user.name,
                   id: user.id,
                   savedState: user.savedState,
                   setting: Setting(
@@ -199,6 +202,14 @@ class _SettingsTabState extends State<SettingsTab> {
                   ),
                 );
                 await userRepo.updateUser(updated);
+                TimerState state = Provider.of<TimerState>(context);
+                state.timerSessionsFromSettings( PomoTimer(
+                  timerDuration: TimerDuration(
+                    longBreak: _longBreak,
+                    shortBreak: _shortBreak,
+                    work: state.project == null ? _workDuration : state.currentTimer.timerDuration.work,
+                  ),timerType: state.currentTimer.timerType,),
+                );
                 setState(() {
                   processing=false;
                 });

@@ -22,11 +22,12 @@ class TimerTab extends StatelessWidget {
                       project: state.project,
                       timer: state.currentTimer,
                       workComplete: state.workComplete,
-                      workCanceled: () {
-                        print("--work canceled--");
-                      },
+                      workCanceled: state.workCanceled,
+                      timerStarted: state.timerStarted,
                       breakCanceled: state.breakCanceled,
                       breakComplete: state.breakComplete,
+                      isRunning: state.isRunning,
+                      elapsed: state.elapsed,
                     ),
                   ],
                 ),

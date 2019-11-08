@@ -14,6 +14,9 @@ class CDTimer extends StatefulWidget {
   final Function breakCanceled;
   final Function workComplete;
   final Function workCanceled;
+  final Function(Duration) timerStarted;
+  final bool isRunning;
+  final Duration elapsed;
 
   CDTimer({
     Key key,
@@ -23,13 +26,16 @@ class CDTimer extends StatefulWidget {
     @required this.breakCanceled,
     @required this.workCanceled,
     @required this.workComplete,
+    this.timerStarted,
+    this.isRunning = false,
+    this.elapsed = Duration.zero,
   }) : super(key: key);
 
   @override
   _CDTimerState createState() => _CDTimerState();
 }
 
-class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
+class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   Timer timer;
 
   /// Store the time
@@ -47,7 +53,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
 
   /// Called each time the time is ticking
   void updateClock() {
-    final duration = durationByTimerType(widget.timer.timerType);
+    final duration = Duration(milliseconds: durationByTimerType(widget.timer.timerType,widget.timer.timerDuration).inMilliseconds - widget.elapsed.inMilliseconds);
 
     // if time is up, stop the timer
     if (stopwatch.elapsed.inMilliseconds == duration.inMilliseconds) {
@@ -58,7 +64,6 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
       widget.timer.timerType == TimerType.WORK
           ? widget.workComplete()
           : widget.breakComplete();
-      Provider.of<TimerState>(context).isRunning = false;
       setState(() {
         statusText = 'Finished';
       });
@@ -80,22 +85,11 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     });
   }
 
-  Duration durationByTimerType(TimerType type) {
-    switch (type) {
-      case TimerType.BREAK:
-        return widget.timer.timerDuration.shortBreak;
-      case TimerType.LONG_BREAK:
-        return widget.timer.timerDuration.longBreak;
-      case TimerType.WORK:
-      default:
-        return widget.timer.timerDuration.work;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    final duration = durationByTimerType(widget.timer.timerType);
+    WidgetsBinding.instance.addObserver(this);
+    final duration = durationByTimerType(widget.timer.timerType,widget.timer.timerDuration);
     _controller = AnimationController(
       duration: duration,
       vsync: this,
@@ -105,7 +99,18 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state = $state');
+    if(state == AppLifecycleState.resumed) {
+      TimerState state = Provider.of<TimerState>(context);
+      state.loadTimerFromPrefs();
+    }
+    print(Provider.of<TimerState>(context).isRunning ? "Save timer" : "not running");
+  }
+
+  @override
   void dispose() {
+      WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     stopwatch.stop();
     timer.cancel();
@@ -117,7 +122,6 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
     _controller.reset();
     stopwatch.stop();
     stopwatch.reset();
-    Provider.of<TimerState>(context).isRunning = false;
   }
 
   @override
@@ -130,11 +134,12 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
         curve: Curves.easeInOut,
       ),
     ); */
+    if(widget.isRunning && !stopwatch.isRunning) stopwatch.start();
 
     return Container(
       child: Column(
         children: <Widget>[
-          if (stopwatch.isRunning) ...[
+          if (widget.isRunning) ...[
             Text(
               timeText,
               style: TextStyle(fontSize: 54.0),
@@ -146,12 +151,12 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
                 if (widget.timer.timerType == TimerType.WORK) {
                   widget.workCanceled();
                 } else {
-                  widget.breakComplete();
+                  widget.breakCanceled();
                 }
               },
             ),
           ],
-          if (!stopwatch.isRunning)
+          if (!widget.isRunning)
             OutlineButton(
               child: Text(widget.timer.timerType == TimerType.WORK
                   ? "Start Work Session"
@@ -160,7 +165,8 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
                 print('--Running--');
                 begin = 50.0;
                 stopwatch.start();
-                Provider.of<TimerState>(context).isRunning = true;
+                if (widget.timerStarted != null)
+                  widget.timerStarted(durationByTimerType(widget.timer.timerType,widget.timer.timerDuration));
                 _controller.forward();
                 updateClock();
               },
@@ -170,7 +176,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin {
               child: Text("Skip Break"),
               onPressed: () {
                 _restartCountDown();
-                widget.breakComplete();
+                widget.breakCanceled();
               },
             ),
         ],

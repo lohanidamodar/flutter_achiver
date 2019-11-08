@@ -34,7 +34,7 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
     return PopupMenuButton<Project>(
       initialValue: _selectedProject,
       child: ListTile(
-        title: Text(_selectedProject.title),
+        title: Text(_selectedProject?.title ?? "No project selected"),
         trailing: Icon(Icons.keyboard_arrow_down),
       ),
       itemBuilder: (context) => [
@@ -43,7 +43,7 @@ class _ProjectDropdownState extends State<ProjectDropdown> {
           value: project,
         )),
       ],
-      onSelected: (project) {
+      onSelected: widget.disabled ? null : (project) {
         setState(() {
           _selectedProject = project;
         });

@@ -1,7 +1,8 @@
 import 'package:flutter_achiver/core/presentation/res/assets.dart';
+import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
 
 const List<Duration> durations = [
-  Duration(minutes: 5),
+  Duration(minutes: 1),
   Duration(minutes: 10),
   Duration(minutes: 15),
   Duration(minutes: 20),
@@ -21,7 +22,7 @@ const List<Duration> durations = [
   Duration(minutes: 180),
 ];
 const List<Duration> longBreakDurations = [
-  Duration(minutes: 5),
+  Duration(minutes: 1),
   Duration(minutes: 10),
   Duration(minutes: 15),
   Duration(minutes: 17),
@@ -125,3 +126,15 @@ ProjectStatus stringToStatus(String status) {
       return ProjectStatus.ONGOING;
   }
 }
+
+Duration durationByTimerType(TimerType type, TimerDuration timer) {
+    switch (type) {
+      case TimerType.BREAK:
+        return timer.shortBreak;
+      case TimerType.LONG_BREAK:
+        return timer.longBreak;
+      case TimerType.WORK:
+      default:
+        return timer.work;
+    }
+  }

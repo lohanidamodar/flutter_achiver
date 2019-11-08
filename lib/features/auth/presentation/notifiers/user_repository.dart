@@ -86,7 +86,7 @@ class UserRepository with ChangeNotifier {
 
   updateUser(User updatedUser, {bool notify = false}) async {
     _fsUser = updatedUser;
-    await userDBS.createItem(_fsUser, id: _fsUser.id);
+    await userDBS.updateItem(_fsUser);
     if(notify) notifyListeners();
   }
 }
