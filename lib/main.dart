@@ -6,6 +6,7 @@ import 'package:flutter_achiver/features/projects/data/services/firestore_projec
 import 'package:flutter_achiver/features/projects/presentation/pages/add_project.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
 import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
+import 'package:flutter_achiver/features/stat/presentation/pages/add_work_log.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:provider/provider.dart';
 
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
           routes: {
             "projects": (_) => ProjectsPage(),
             "add_project": (_) => AddProjectPage(),
+            "add_work_log": (_) => AddWorkLogPage(),
           },
         ),
       );

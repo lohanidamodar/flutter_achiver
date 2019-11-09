@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/add_project_fab.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/projects_tab.dart';
 import 'package:flutter_achiver/features/settings/presentation/widgets/settings_tab.dart';
+import 'package:flutter_achiver/features/stat/presentation/widgets/add_log_fab.dart';
 import 'package:flutter_achiver/features/stat/presentation/widgets/stats_tab.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer_tab.dart';
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
-      floatingActionButton: _currentPage == 1 ? addProjectFab(context) : null,
+      floatingActionButton: _currentPage == 1 ? addProjectFab(context) : _currentPage == 2 ? addWorkLogFab(context) : null,
     );
   }
 
