@@ -1,4 +1,3 @@
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/notifiers/theme_notifier.dart';
 import 'package:flutter_achiver/features/auth/presentation/notifiers/user_repository.dart';
@@ -10,10 +9,7 @@ import 'package:flutter_achiver/features/stat/data/service/firestore_log_service
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  AndroidAlarmManager.initialize();
-  runApp(ProvidedApp());
-} 
+void main() => runApp(ProvidedApp());
 
 class ProvidedApp extends StatelessWidget {
   @override
@@ -28,10 +24,10 @@ class ProvidedApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<UserRepository, TimerState>(
           builder: (context, user, timerState) {
-            if(timerState != null) {
+            if (timerState != null) {
               timerState.setUser = user.fsUser;
               return timerState;
-            }else{
+            } else {
               return TimerState(user: user.fsUser);
             }
           },
@@ -42,13 +38,12 @@ class ProvidedApp extends StatelessWidget {
   }
 }
 
-class MyApp extends StatelessWidget{
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Provider.of<ThemeNotifier>(context).currentTheme;
     return Consumer<UserRepository>(builder: (context, user, child) {
-      if(user.user!=null) {
+      if (user.user != null) {
         initWorkLogDBS(user.user.uid);
         initProjectDBS(user.user.uid);
       }

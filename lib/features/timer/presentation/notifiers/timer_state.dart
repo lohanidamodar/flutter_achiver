@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
-
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
@@ -15,31 +12,8 @@ import 'package:flutter_achiver/features/timer/presentation/model/timer_duration
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
-
-alarmCallback() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await notifications.initialize(
-      InitializationSettings(AndroidInitializationSettings('app_icon'), null));
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'com.popupbits.achiver',
-      'Achiver',
-      'Achiver - Pomodoro timer plus time tracker',
-      importance: Importance.Max,
-      priority: Priority.High,
-      ticker: 'achiver');
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  notifications.show(
-    0,
-    prefs.getString("notification_title"),
-    prefs.getString("notification_details"),
-    platformChannelSpecifics,
-    payload: 'timer payload',
-  );
-  player.play("break-alarm.mp3");
-}
+FlutterLocalNotificationsPlugin notifications =
+    FlutterLocalNotificationsPlugin();
 
 AudioCache player = AudioCache(prefix: "audios/");
 
@@ -51,7 +25,7 @@ class TimerState extends ChangeNotifier {
   DateTime _today;
   DateTime timerStartedAt;
   int _workSessionsCompletedToday;
-  final int alarmId = 1;
+  final int notificationId = 1;
   SharedPreferences prefs;
   final String timerKey = "running_timer";
   Duration elapsed;
@@ -85,7 +59,7 @@ class TimerState extends ChangeNotifier {
   }
 
   set setUser(User upuser) {
-    if(upuser != null){
+    if (upuser != null) {
       user = upuser;
       initWorkLogDBS(user.id);
       _loadFromDatabase();
@@ -105,20 +79,20 @@ class TimerState extends ChangeNotifier {
   }
 
   timerStarted(Duration duration) {
-    setAlarm(duration, alarmCallback);
+    setAlarm(duration);
     _timerRunning = true;
     timerStartedAt = DateTime.now();
     _saveTimerToPrefs();
     notifyListeners();
   }
 
-  workComplete() {
+  workComplete({bool playSound = true}) {
     _workSessionsCompletedToday++;
     timerStartedAt = null;
     _timerRunning = false;
     elapsed = Duration.zero;
     _clearTimerFromPrefs();
-    player.play("work-alarm.mp3");
+    if (playSound) player.play("work-alarm.mp3");
     WorkLog log = WorkLog(
       date: DateTime.now(),
       duration: _currentTimer.timerDuration.work,
@@ -142,14 +116,14 @@ class TimerState extends ChangeNotifier {
     timerStartedAt = null;
     _timerRunning = false;
     _clearTimerFromPrefs();
-    cancelAlarm();
+    cancelNotification();
     notifyListeners();
   }
 
-  breakComplete() {
+  breakComplete({bool playSound = true}) {
     elapsed = Duration.zero;
     timerStartedAt = null;
-    player.play("break-alarm.mp3");
+    if (playSound) player.play("break-alarm.mp3");
     _timerRunning = false;
     _clearTimerFromPrefs();
     _breakOver();
@@ -161,18 +135,37 @@ class TimerState extends ChangeNotifier {
     _timerRunning = false;
     _clearTimerFromPrefs();
     _breakOver();
-    cancelAlarm();
+    cancelNotification();
   }
 
-  setAlarm(Duration delay, Function callback) async {
-    prefs.setString("notification_title", "${timerTypeToString(_currentTimer.timerType)} session completed.");
-    prefs.setString("notification_details", "Your ${timerTypeToString(_currentTimer.timerType)} session has successfully completed.");
-    await AndroidAlarmManager.oneShot(delay, alarmId, callback,
-        alarmClock: true, exact: true,wakeup: true);
+  setAlarm(Duration delay) async {
+    prefs.setString("notification_title", "");
+    prefs.setString("notification_details", "");
+    await notifications.initialize(InitializationSettings(
+        AndroidInitializationSettings('app_icon'), null));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'com.popupbits.achiver',
+        'Achiver',
+        'Achiver - Pomodoro timer plus time tracker',
+        importance: Importance.Max,
+        priority: Priority.High,
+        ticker: 'achiver');
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    notifications.schedule(
+      notificationId,
+      "${timerTypeToString(_currentTimer.timerType)} session completed.",
+      "Your ${timerTypeToString(_currentTimer.timerType)} session has successfully completed.",
+      DateTime.now().add(delay),
+      platformChannelSpecifics,
+      payload: 'timer payload',
+      androidAllowWhileIdle: true,
+    );
   }
 
-  cancelAlarm() async {
-    await AndroidAlarmManager.cancel(alarmId);
+  cancelNotification() async {
+    await notifications.cancel(notificationId);
   }
 
   _breakOver() {
@@ -232,9 +225,9 @@ class TimerState extends ChangeNotifier {
       notifyListeners();
     } else {
       if (type == TimerType.WORK)
-        workComplete();
+        workComplete(playSound: false);
       else
-        breakComplete();
+        breakComplete(playSound: false);
     }
   }
 
