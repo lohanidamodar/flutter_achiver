@@ -18,10 +18,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
 
 alarmCallback() async {
-  final DateTime now = DateTime.now();
-  final int isolateId = Isolate.current.hashCode;
-  print("[$now] Hello, world! isolate=$isolateId function='$alarmCallback'");
-  await _initNotifications();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await notifications.initialize(
       InitializationSettings(AndroidInitializationSettings('app_icon'), null));
@@ -35,22 +31,20 @@ alarmCallback() async {
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  await notifications.show(
+  notifications.show(
     0,
     prefs.getString("notification_title"),
     prefs.getString("notification_details"),
     platformChannelSpecifics,
     payload: 'timer payload',
   );
+  player.play("break-alarm.mp3");
 }
 
-_initNotifications() async {
-  
-}
+AudioCache player = AudioCache(prefix: "audios/");
 
 class TimerState extends ChangeNotifier {
   User user;
-  static AudioCache player = AudioCache(prefix: "audios/");
   Project _project;
   PomoTimer _currentTimer;
   bool _timerRunning;
@@ -91,10 +85,12 @@ class TimerState extends ChangeNotifier {
   }
 
   set setUser(User upuser) {
-    user = upuser;
-    initWorkLogDBS(user.id);
-    _loadFromDatabase();
-    loadTimerFromPrefs();
+    if(upuser != null){
+      user = upuser;
+      initWorkLogDBS(user.id);
+      _loadFromDatabase();
+      loadTimerFromPrefs();
+    }
   }
 
   set currentTimer(PomoTimer timer) {
@@ -172,7 +168,7 @@ class TimerState extends ChangeNotifier {
     prefs.setString("notification_title", "${timerTypeToString(_currentTimer.timerType)} session completed.");
     prefs.setString("notification_details", "Your ${timerTypeToString(_currentTimer.timerType)} session has successfully completed.");
     await AndroidAlarmManager.oneShot(delay, alarmId, callback,
-        alarmClock: true, exact: true);
+        alarmClock: true, exact: true,wakeup: true);
   }
 
   cancelAlarm() async {
