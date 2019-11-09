@@ -4,6 +4,7 @@ import 'package:flutter_achiver/features/auth/presentation/notifiers/user_reposi
 import 'package:flutter_achiver/features/auth/presentation/pages/main_screen.dart';
 import 'package:flutter_achiver/features/projects/data/services/firestore_project_service.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/add_project.dart';
+import 'package:flutter_achiver/features/projects/presentation/pages/project_details.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
 import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/stat/presentation/pages/add_work_log.dart';
@@ -62,6 +63,22 @@ class MyApp extends StatelessWidget {
             "projects": (_) => ProjectsPage(),
             "add_project": (_) => AddProjectPage(),
             "add_work_log": (_) => AddWorkLogPage(),
+          },
+          onGenerateRoute: (RouteSettings settings) {
+            return MaterialPageRoute(builder: (_){
+              switch(settings.name) {
+                case "edit_project":
+                  return AddProjectPage(
+                    project: settings.arguments,
+                  );
+                case "project_details":
+                  return ProjectDetailsPage(
+                    project: settings.arguments,
+                  );
+                default:
+                  return MainScreen();
+              }
+            });
           },
         ),
       );

@@ -31,13 +31,9 @@ class ProjectList extends StatelessWidget {
               child: ProjectListItem(
                 project: project,
                 onDelete: () => _onDelete(context, project),
-                onEdit: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => AddProjectPage(
-                        project: project,
-                      ),
-                    )),
+                onEdit: () => Navigator.pushNamed(context, 'edit_project',
+                    arguments: project),
+                onTap: () => Navigator.pushNamed(context, 'project_details',arguments: project),
               ),
             );
           },
