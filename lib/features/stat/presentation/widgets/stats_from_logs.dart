@@ -69,13 +69,21 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Text.rich(TextSpan(
+          children: [
+            TextSpan(text: "You have completed "),
+            TextSpan(text: "${widget.logs.length}", style: boldText),
+            TextSpan(text: " work sessions during this period. Awesome job!")
+          ]
+        ),),
+        const SizedBox(height: 10.0),
         BorderedContainer(
           padding: const EdgeInsets.all(8.0),
           color: Colors.pink.shade400,
           child: Row(
             children: <Widget>[
               Text(
-                "Total time spent",
+                "Total time worked",
                 style: boldText.copyWith(color: Colors.white70),
               ),
               Spacer(),
