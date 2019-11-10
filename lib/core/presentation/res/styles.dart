@@ -10,3 +10,7 @@ final TextStyle titleStyle = TextStyle(
   fontSize: 16.0,
   fontWeight: FontWeight.bold,
 );
+
+final TextStyle boldText = TextStyle(
+  fontWeight: FontWeight.bold,
+);
