@@ -1,6 +1,16 @@
 import 'package:flutter_achiver/core/presentation/res/assets.dart';
 import 'package:flutter_achiver/features/timer/presentation/model/timer_durations_model.dart';
 
+const Map<int,String> days = {
+  1: "Sunday",
+  2: "Monday",
+  3: "Tuesday",
+  4: "Wednesday",
+  5: "Thursday",
+  6: "Friday",
+  7: "Saturday",
+};
+
 const List<Duration> durations = [
   Duration(minutes: 1),
   Duration(minutes: 10),
