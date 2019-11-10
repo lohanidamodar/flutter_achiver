@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_achiver/core/presentation/res/colors.dart';
 
 class BorderedContainer extends StatelessWidget {
   final String title;
   final Widget child;
   final double height;
+  final double width;
   final EdgeInsets padding;
   final EdgeInsets margin;
   final Color color;
@@ -17,6 +17,7 @@ class BorderedContainer extends StatelessWidget {
     this.padding,
     this.margin,
     this.color,
+    this.width = double.infinity,
   }) : super(key: key);
 
   @override
@@ -25,7 +26,7 @@ class BorderedContainer extends StatelessWidget {
       color: color,
       child: Container(
         padding: padding ?? const EdgeInsets.all(16.0),
-        width: double.infinity,
+        width: width,
         height: height,
         margin: margin,
         child: title == null

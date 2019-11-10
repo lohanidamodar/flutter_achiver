@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/res/functions.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/features/projects/presentation/widgets/project_dropdown.dart';
+import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:flutter_achiver/features/timer/presentation/widgets/timer.dart';
 import 'package:provider/provider.dart';
@@ -56,9 +58,16 @@ class TimerTab extends StatelessWidget {
               ),
               BorderedContainer(
                 padding: const EdgeInsets.all(0),
-                child: ListTile(title: Text("Daily average (Last 7 Days)"),
-                    ),
-              )
+                child: FutureBuilder(
+                    future: logDBS.getListFromTo('date', beginingOfDay(DateTime(today.year,today.month,today.day-6)), endOfDay(today)),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      return ListTile(
+                        title: Text("Daily average (Last 7 Days)"),
+                        trailing: !snapshot.hasData ? Text("N/A") : Text((snapshot.data.length / 7).toInt().toString()),
+                      );
+                    },
+                  ),
+              ),
             ],
           ),
         );
