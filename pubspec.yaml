@@ -15,6 +15,7 @@ dependencies:
   audioplayers: ^0.13.2
   flutter_local_notifications: ^0.8.4
   shared_preferences: ^0.5.4+3
+  date_utils: ^0.1.0+2
 dev_dependencies:
   flutter_test:
     sdk: flutter
