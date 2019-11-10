@@ -11,7 +11,13 @@ import 'stats_block.dart';
 class StatsFromLogs extends StatefulWidget {
   final List<WorkLog> logs;
   final ChartTimeType chartTimeType;
-  const StatsFromLogs({Key key, @required this.logs,this.chartTimeType = ChartTimeType.WEEKLY}) : super(key: key);
+  final bool showProjects;
+  const StatsFromLogs(
+      {Key key,
+      @required this.logs,
+      this.chartTimeType = ChartTimeType.WEEKLY,
+      this.showProjects = true})
+      : super(key: key);
 
   @override
   _StatsFromLogsState createState() => _StatsFromLogsState();
@@ -63,19 +69,20 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.logs.length < 1) return Container(
-      child: Text("Sorry no records found"),
-    );
+    if (widget.logs.length < 1)
+      return Container(
+        child: Text("Sorry no records found"),
+      );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text.rich(TextSpan(
-          children: [
+        Text.rich(
+          TextSpan(children: [
             TextSpan(text: "You have completed "),
             TextSpan(text: "${widget.logs.length}", style: boldText),
             TextSpan(text: " work sessions during this period. Awesome job!")
-          ]
-        ),),
+          ]),
+        ),
         const SizedBox(height: 10.0),
         BorderedContainer(
           padding: const EdgeInsets.all(8.0),
@@ -97,14 +104,16 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
             ],
           ),
         ),
-        if(!isDaily(widget.chartTimeType))
-          ...[
-            const SizedBox(height: 10.0),
-            Text("Time worked by day of the week"),
-            _buildStatByDays(context),],
-        const SizedBox(height: 10.0),
-        Text("Projects worked on"),
-        _buildStatByProjects(context),
+        if (!isDaily(widget.chartTimeType)) ...[
+          const SizedBox(height: 10.0),
+          Text("Time worked by day of the week"),
+          _buildStatByDays(context),
+        ],
+        if (widget.showProjects) ...[
+          const SizedBox(height: 10.0),
+          Text("Projects worked on"),
+          _buildStatByProjects(context),
+        ],
       ],
     );
   }
@@ -166,6 +175,7 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
       ),
     );
   }
+
   BorderedContainer _buildStatByProjects(BuildContext context) {
     return BorderedContainer(
       padding: const EdgeInsets.all(8.0),
