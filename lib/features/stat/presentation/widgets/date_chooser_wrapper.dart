@@ -31,14 +31,14 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
 
   initDates() {
     if (isWeekly(chartTimeType)) {
-      from = dateUtils.Utils.firstDayOfWeek(date);
-      to = dateUtils.Utils.lastDayOfWeek(date);
+      from = beginingOfDay(dateUtils.Utils.firstDayOfWeek(date));
+      to = endOfDay(dateUtils.Utils.lastDayOfWeek(date));
     } else if (isMonthly(chartTimeType)) {
-      from = dateUtils.Utils.firstDayOfMonth(date);
-      to = dateUtils.Utils.lastDayOfMonth(date);
+      from = beginingOfDay(dateUtils.Utils.firstDayOfMonth(date));
+      to = endOfDay(dateUtils.Utils.lastDayOfMonth(date));
     } else if (isYearly(chartTimeType)) {
-      from = firstDayOfYear(date);
-      to = lastDayOfYear(date);
+      from = beginingOfDay(firstDayOfYear(date));
+      to = endOfDay(lastDayOfYear(date));
     } else if (isDaily(chartTimeType)) {
       from = beginingOfDay(date);
       to = endOfDay(date);
