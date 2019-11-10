@@ -30,7 +30,7 @@ class DatabaseService<T extends DatabaseItem> {
         list.documents.map((doc) => fromDS(doc.documentID,doc.data)).toList());
   }
 
-  Future<List<T>> getQueryList({List<QueryArgs> args}) async {
+  Future<List<T>> getQueryList({List<QueryArgs> args = const[]}) async {
     CollectionReference collref = _db.collection(collection);
     Query ref;
     for(QueryArgs arg in args) {
@@ -48,7 +48,7 @@ class DatabaseService<T extends DatabaseItem> {
     return query.documents.map((doc) => fromDS(doc.documentID,doc.data)).toList();
   }
 
-  Stream<List<T>> streamQueryList({List<QueryArgs> args}) {
+  Stream<List<T>> streamQueryList({List<QueryArgs> args = const []}) {
     CollectionReference collref = _db.collection(collection);
     Query ref;
     for(QueryArgs arg in args) {
@@ -62,7 +62,7 @@ class DatabaseService<T extends DatabaseItem> {
     return query.map((snap) => snap.documents.map((doc) => fromDS(doc.documentID,doc.data)).toList());
   }
 
-  Future<List<T>> getListFromTo(String field, DateTime from, DateTime to,{List<QueryArgs> args}) async {
+  Future<List<T>> getListFromTo(String field, DateTime from, DateTime to,{List<QueryArgs> args = const []}) async {
     var ref = _db.collection(collection)
       .orderBy(field);
     for(QueryArgs arg in args) {
@@ -74,7 +74,7 @@ class DatabaseService<T extends DatabaseItem> {
     return query.documents.map((doc) => fromDS(doc.documentID,doc.data)).toList();
   }
   
-  Stream<List<T>> streamListFromTo(String field, DateTime from, DateTime to,{List<QueryArgs> args}) {
+  Stream<List<T>> streamListFromTo(String field, DateTime from, DateTime to,{List<QueryArgs> args = const[]}) {
     var ref = _db.collection(collection)
       .orderBy(field,descending: true);
     for(QueryArgs arg in args) {
