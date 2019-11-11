@@ -17,7 +17,7 @@ class LogListPage extends StatelessWidget {
         itemBuilder: (context, index) {
           WorkLog log = logs[index];
           return ListTile(
-            title: Text(log.project.title),
+            title: Text("${log.project.title} (${log.duration.inMinutes} min)"),
             subtitle: Text(Utils.fullDayFormat(log.date)),
           );
         },
