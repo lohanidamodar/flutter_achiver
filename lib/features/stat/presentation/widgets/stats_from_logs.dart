@@ -4,8 +4,8 @@ import 'package:flutter_achiver/core/presentation/res/functions.dart';
 import 'package:flutter_achiver/core/presentation/res/styles.dart';
 import 'package:flutter_achiver/core/presentation/widgets/bordered_container.dart';
 import 'package:flutter_achiver/features/stat/data/model/log_model.dart';
+import 'package:flutter_achiver/features/stat/presentation/widgets/stats_tile.dart';
 import 'package:flutter_achiver/features/stat/res/constants.dart';
-
 import 'stats_block.dart';
 
 class StatsFromLogs extends StatefulWidget {
@@ -110,7 +110,7 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
               StatsBlock(
                 child: Text(
                   "${durationToHMString(totalTimeSpent)}",
-                  style: titleStyle,
+                  style: titleStyle.copyWith(color: Colors.white),
                 ),
               ),
             ],
@@ -135,52 +135,17 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          ...[7,1, 2, 3, 4, 5, 6].map(
-            (day) => Stack(
-              children: <Widget>[
-                BorderedContainer(
-                  color: Theme.of(context).primaryColor,
-                ),
-                AnimatedContainer(
-                  margin: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.pink.shade300,
-                  ),
-                  width: timeSpentByDays[day].inSeconds > 0
-                      ? MediaQuery.of(context).size.width *
-                          (timeSpentByDays[day].inSeconds /
-                              totalTimeSpent.inSeconds)
-                      : 0,
-                  padding: const EdgeInsets.all(16.0),
-                  duration: Duration(milliseconds: 200),
-                ),
-                BorderedContainer(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(0.0),
-                  color: Colors.transparent,
-                  child: Row(
-                    children: <Widget>[
-                      Text(days[day]),
-                      Spacer(),
-                      Text(
-                        "${durationToHMString(timeSpentByDays[day])}",
-                        style: boldText,
-                        textAlign: TextAlign.right,
-                      ),
-                      const SizedBox(width: 10.0),
-                      SizedBox(
-                        width: 40.0,
-                        child: Text(
-                          "${(timeSpentByDays[day].inSeconds / totalTimeSpent.inSeconds * 100).toStringAsFixed(0)}%",
-                          textAlign: TextAlign.right,
-                          style: boldText,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+          ...[7, 1, 2, 3, 4, 5, 6].map(
+            (day) => new StatTile(
+              barWidth: timeSpentByDays[day].inSeconds > 0
+                  ? MediaQuery.of(context).size.width *
+                      (timeSpentByDays[day].inSeconds /
+                          totalTimeSpent.inSeconds)
+                  : 0,
+              title: days[day],
+              percent:
+                  "${(timeSpentByDays[day].inSeconds / totalTimeSpent.inSeconds * 100).toStringAsFixed(0)}%",
+              hours: "${durationToHMString(timeSpentByDays[day])}",
             ),
           ),
         ],
@@ -194,51 +159,16 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
       child: Column(
         children: <Widget>[
           ...timeSpentByProjects.keys.map(
-            (project) => Stack(
-              children: <Widget>[
-                BorderedContainer(
-                  color: Theme.of(context).primaryColor,
-                ),
-                AnimatedContainer(
-                  margin: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.pink.shade300,
-                  ),
-                  width: timeSpentByProjects[project].inSeconds > 0
-                      ? MediaQuery.of(context).size.width *
-                          (timeSpentByProjects[project].inSeconds /
-                              totalTimeSpent.inSeconds)
-                      : 0,
-                  padding: const EdgeInsets.all(16.0),
-                  duration: Duration(milliseconds: 200),
-                ),
-                BorderedContainer(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(0.0),
-                  color: Colors.transparent,
-                  child: Row(
-                    children: <Widget>[
-                      Text(project),
-                      Spacer(),
-                      Text(
-                        "${durationToHMString(timeSpentByProjects[project])}",
-                        style: boldText,
-                        textAlign: TextAlign.right,
-                      ),
-                      const SizedBox(width: 10.0),
-                      SizedBox(
-                        width: 40.0,
-                        child: Text(
-                          "${(timeSpentByProjects[project].inSeconds / totalTimeSpent.inSeconds * 100).toStringAsFixed(0)}%",
-                          textAlign: TextAlign.right,
-                          style: boldText,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            (project) => StatTile(
+              barWidth: timeSpentByProjects[project].inSeconds > 0
+                  ? MediaQuery.of(context).size.width *
+                      (timeSpentByProjects[project].inSeconds /
+                          totalTimeSpent.inSeconds)
+                  : 0,
+              title: project,
+              hours: "${durationToHMString(timeSpentByProjects[project])}",
+              percent:
+                  "${(timeSpentByProjects[project].inSeconds / totalTimeSpent.inSeconds * 100).toStringAsFixed(0)}%",
             ),
           ),
         ],

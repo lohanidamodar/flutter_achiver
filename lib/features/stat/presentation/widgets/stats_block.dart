@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_achiver/core/presentation/notifiers/theme_notifier.dart';
+import 'package:provider/provider.dart';
 
 class StatsBlock extends StatelessWidget {
   const StatsBlock({
@@ -16,7 +18,7 @@ class StatsBlock extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
-        color: Theme.of(context).primaryColor,
+        color: Provider.of<ThemeNotifier>(context).darkTheme ? Theme.of(context).primaryColor : Colors.black87,
       ),
       padding: const EdgeInsets.all(8.0),
       child: child,
