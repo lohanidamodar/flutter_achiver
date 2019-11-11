@@ -12,7 +12,7 @@ const Map<int,String> days = {
 };
 
 const List<Duration> durations = [
-  Duration(minutes: 1),
+  Duration(minutes: 5),
   Duration(minutes: 10),
   Duration(minutes: 15),
   Duration(minutes: 20),
@@ -32,7 +32,7 @@ const List<Duration> durations = [
   Duration(minutes: 180),
 ];
 const List<Duration> longBreakDurations = [
-  Duration(minutes: 1),
+  Duration(minutes: 5),
   Duration(minutes: 10),
   Duration(minutes: 15),
   Duration(minutes: 17),
