@@ -135,7 +135,7 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          ...[1, 2, 3, 4, 5, 6, 7].map(
+          ...[7,1, 2, 3, 4, 5, 6].map(
             (day) => Stack(
               children: <Widget>[
                 BorderedContainer(
