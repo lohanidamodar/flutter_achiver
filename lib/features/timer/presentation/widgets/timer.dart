@@ -35,7 +35,8 @@ class CDTimer extends StatefulWidget {
   _CDTimerState createState() => _CDTimerState();
 }
 
-class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _CDTimerState extends State<CDTimer>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   Timer timer;
 
   /// Store the time
@@ -53,7 +54,11 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, 
 
   /// Called each time the time is ticking
   void updateClock() {
-    final duration = Duration(milliseconds: durationByTimerType(widget.timer.timerType,widget.timer.timerDuration).inMilliseconds - widget.elapsed.inMilliseconds);
+    final duration = Duration(
+        milliseconds: durationByTimerType(
+                    widget.timer.timerType, widget.timer.timerDuration)
+                .inMilliseconds -
+            widget.elapsed.inMilliseconds);
 
     // if time is up, stop the timer
     if (stopwatch.elapsed.inMilliseconds == duration.inMilliseconds) {
@@ -89,7 +94,8 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, 
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    final duration = durationByTimerType(widget.timer.timerType,widget.timer.timerDuration);
+    final duration =
+        durationByTimerType(widget.timer.timerType, widget.timer.timerDuration);
     _controller = AnimationController(
       duration: duration,
       vsync: this,
@@ -101,16 +107,18 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('state = $state');
-    if(state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed) {
       TimerState state = Provider.of<TimerState>(context);
       state.loadTimerFromPrefs();
     }
-    print(Provider.of<TimerState>(context).isRunning ? "Save timer" : "not running");
+    print(Provider.of<TimerState>(context).isRunning
+        ? "Save timer"
+        : "not running");
   }
 
   @override
   void dispose() {
-      WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     stopwatch.stop();
     timer.cancel();
@@ -134,7 +142,7 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, 
         curve: Curves.easeInOut,
       ),
     ); */
-    if(widget.isRunning && !stopwatch.isRunning) stopwatch.start();
+    if (widget.isRunning && !stopwatch.isRunning) stopwatch.start();
 
     return Container(
       child: Column(
@@ -157,27 +165,34 @@ class _CDTimerState extends State<CDTimer> with SingleTickerProviderStateMixin, 
             ),
           ],
           if (!widget.isRunning)
-            OutlineButton(
-              child: Text(widget.timer.timerType == TimerType.WORK
-                  ? "Start Work Session"
-                  : "Take a Break"),
-              onPressed: () {
-                print('--Running--');
-                begin = 50.0;
-                stopwatch.start();
-                if (widget.timerStarted != null)
-                  widget.timerStarted(durationByTimerType(widget.timer.timerType,widget.timer.timerDuration));
-                _controller.forward();
-                updateClock();
-              },
+            SizedBox(
+              width: 160.0,
+              child: OutlineButton(
+                child: Text(widget.timer.timerType == TimerType.WORK
+                    ? "Start Work Session"
+                    : "Take a Break"),
+                onPressed: () {
+                  print('--Running--');
+                  begin = 50.0;
+                  stopwatch.start();
+                  if (widget.timerStarted != null)
+                    widget.timerStarted(durationByTimerType(
+                        widget.timer.timerType, widget.timer.timerDuration));
+                  _controller.forward();
+                  updateClock();
+                },
+              ),
             ),
           if (widget.timer.timerType != TimerType.WORK && !stopwatch.isRunning)
-            OutlineButton(
-              child: Text("Skip Break"),
-              onPressed: () {
-                _restartCountDown();
-                widget.breakCanceled();
-              },
+            SizedBox(
+              width: 160.0,
+              child: OutlineButton(
+                child: Text("Skip Break"),
+                onPressed: () {
+                  _restartCountDown();
+                  widget.breakCanceled();
+                },
+              ),
             ),
         ],
       ),
