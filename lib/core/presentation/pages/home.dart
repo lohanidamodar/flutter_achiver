@@ -28,46 +28,59 @@ class _HomePageState extends State<HomePage> {
     _currentPage = 0;
   }
 
+  Future<bool> _onWillPop() async {
+    if (_currentPage == 0) return true;
+    setState(() {
+      _currentPage = 0;
+    });
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Achiver'),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Achiver'),
+        ),
+        body: AnimatedSwitcher(
+          duration: Duration(milliseconds: 200),
+          child: _getSelectedTab(),
+        ),
+        bottomNavigationBar: Provider.of<TimerState>(context).isRunning
+            ? null
+            : BottomNavigationBar(
+                currentIndex: _currentPage,
+                type: BottomNavigationBarType.fixed,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.timer),
+                    title: SizedBox(),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.folder),
+                    title: SizedBox(),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.dashboard),
+                    title: SizedBox(),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    title: SizedBox(),
+                  ),
+                ],
+                onTap: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+              ),
+        floatingActionButton: _currentPage == 1
+            ? addProjectFab(context)
+            : _currentPage == 2 ? addWorkLogFab(context) : null,
       ),
-      body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: _getSelectedTab(),
-      ),
-      bottomNavigationBar: Provider.of<TimerState>(context).isRunning
-          ? null
-          : BottomNavigationBar(
-              currentIndex: _currentPage,
-              type: BottomNavigationBarType.fixed,
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.timer),
-                  title: SizedBox(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.folder),
-                  title: SizedBox(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard),
-                  title: SizedBox(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  title: SizedBox(),
-                ),
-              ],
-              onTap: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-            ),
-      floatingActionButton: _currentPage == 1 ? addProjectFab(context) : _currentPage == 2 ? addWorkLogFab(context) : null,
     );
   }
 
