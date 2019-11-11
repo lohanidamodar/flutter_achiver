@@ -23,4 +23,4 @@ DateTime prevYear(date) => DateTime(date.year-1, date.month, date.day);
 DateTime prevDay(date) => DateTime(date.year, date.month, date.day-1);
 DateTime nextDay(date) => DateTime(date.year, date.month, date.day+1);
 DateTime beginingOfDay(date) => DateTime(date.year,date.month,date.day,0,0,0);
-DateTime endOfDay(date) => DateTime(date.year,date.month,date.day,24,0,0);
+DateTime endOfDay(date) => DateTime(date.year,date.month,date.day,23,59,59);

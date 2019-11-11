@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:date_utils/date_utils.dart' as dateUtils;
 
 class DateChooserWrapper extends StatefulWidget {
-  final Widget Function(BuildContext, DateTime, DateTime, ChartTimeType chartTimeType) builder;
+  final Widget Function(
+      BuildContext, DateTime, DateTime, ChartTimeType chartTimeType) builder;
 
   const DateChooserWrapper({Key key, this.builder}) : super(key: key);
   @override
@@ -32,7 +33,7 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
   initDates() {
     if (isWeekly(chartTimeType)) {
       from = beginingOfDay(dateUtils.Utils.firstDayOfWeek(date));
-      to = endOfDay(dateUtils.Utils.lastDayOfWeek(date));
+      to = endOfDay(DateTime(from.year, from.month, from.day + 6));
     } else if (isMonthly(chartTimeType)) {
       from = beginingOfDay(dateUtils.Utils.firstDayOfMonth(date));
       to = endOfDay(dateUtils.Utils.lastDayOfMonth(date));
@@ -60,7 +61,7 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
           ),
         ),
         const SizedBox(height: 10.0),
-        widget.builder(context, from, to,chartTimeType),
+        widget.builder(context, from, to, chartTimeType),
       ],
     );
   }
@@ -92,18 +93,20 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
                   "${DateFormat.MMMd().format(from)} - ${DateFormat.yMMMd().format(to)}",
                   textAlign: TextAlign.center,
                 )
-              : isDaily(chartTimeType) ? Text(
-                  "${DateFormat.yMMMMEEEEd().format(from)}",
-                  textAlign: TextAlign.center,
-                ) : isYearly(chartTimeType)
+              : isDaily(chartTimeType)
                   ? Text(
-                      DateFormat.y().format(from),
+                      "${DateFormat.yMMMMEEEEd().format(from)}",
                       textAlign: TextAlign.center,
                     )
-                  : Text(
-                      "${DateFormat.yMMM().format(from)}",
-                      textAlign: TextAlign.center,
-                    ),
+                  : isYearly(chartTimeType)
+                      ? Text(
+                          DateFormat.y().format(from),
+                          textAlign: TextAlign.center,
+                        )
+                      : Text(
+                          "${DateFormat.yMMM().format(from)}",
+                          textAlign: TextAlign.center,
+                        ),
         ),
         IconButton(
           icon: Icon(Icons.keyboard_arrow_right),
@@ -115,7 +118,8 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
                       date = dateUtils.Utils.nextWeek(date);
                     else if (isMonthly(chartTimeType))
                       date = dateUtils.Utils.nextMonth(date);
-                    else if (isYearly(chartTimeType)) date = nextYear(date);
+                    else if (isYearly(chartTimeType))
+                      date = nextYear(date);
                     else if (isDaily(chartTimeType)) date = nextDay(date);
                     initDates();
                   });

@@ -8,6 +8,7 @@ import 'package:flutter_achiver/features/projects/presentation/pages/project_det
 import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
 import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/stat/presentation/pages/add_work_log.dart';
+import 'package:flutter_achiver/features/stat/presentation/pages/log_list.dart';
 import 'package:flutter_achiver/features/timer/presentation/notifiers/timer_state.dart';
 import 'package:provider/provider.dart';
 
@@ -74,6 +75,10 @@ class MyApp extends StatelessWidget {
                 case "project_details":
                   return ProjectDetailsPage(
                     project: settings.arguments,
+                  );
+                case "log_list":
+                  return LogListPage(
+                    logs: settings.arguments,
                   );
                 default:
                   return MainScreen();

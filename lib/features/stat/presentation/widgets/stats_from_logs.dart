@@ -76,12 +76,24 @@ class _StatsFromLogsState extends State<StatsFromLogs> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text.rich(
-          TextSpan(children: [
-            TextSpan(text: "You have completed "),
-            TextSpan(text: "${widget.logs.length}", style: boldText),
-            TextSpan(text: " work sessions during this period. Awesome job!")
-          ]),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: "You have completed "),
+                  TextSpan(text: "${widget.logs.length}", style: boldText),
+                  TextSpan(
+                      text: " work sessions during this period. Awesome job!")
+                ]),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () => Navigator.pushNamed(context, 'log_list',
+                  arguments: widget.logs),
+            ),
+          ],
         ),
         const SizedBox(height: 10.0),
         BorderedContainer(
