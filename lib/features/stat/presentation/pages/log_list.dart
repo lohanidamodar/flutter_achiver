@@ -10,7 +10,7 @@ class LogListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('title'),
+        title: Text('Work logs'),
       ),
       body: ListView.builder(
         itemCount: logs.length,
