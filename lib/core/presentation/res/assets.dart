@@ -1,3 +1,4 @@
+const String welcomeBg = "assets/welcome-bg.jpg";
 const String timerBack = "assets/timer_back.png";
 const String projectCompleteIcon = "assets/icons/complete.png";
 const String projectSuspendedIcon = "assets/icons/suspended.png";
