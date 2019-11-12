@@ -88,16 +88,16 @@ class TimerState extends ChangeNotifier {
 
   workComplete({bool playSound = true}) {
     _workSessionsCompletedToday++;
-    timerStartedAt = null;
     _timerRunning = false;
     elapsed = Duration.zero;
     _clearTimerFromPrefs();
     if (playSound) player.play("work-alarm.mp3");
     WorkLog log = WorkLog(
-      date: DateTime.now(),
+      date: timerStartedAt.add(_currentTimer.timerDuration.work),
       duration: _currentTimer.timerDuration.work,
       project: _project,
     );
+    timerStartedAt = null;
     logDBS.createItem(log);
     _currentTimer = PomoTimer(
       timerDuration: _currentTimer.timerDuration,
