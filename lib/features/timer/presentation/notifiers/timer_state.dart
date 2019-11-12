@@ -214,8 +214,8 @@ class TimerState extends ChangeNotifier {
         DateTime.now().difference(startedAt).inSeconds.toString());
     print("total duration: " + rtd.inSeconds.toString());
     Duration el = DateTime.now().difference(startedAt);
+    timerStartedAt = startedAt;
     if (el.inSeconds < rtd.inSeconds) {
-      timerStartedAt = startedAt;
       elapsed = el;
       _currentTimer = PomoTimer(
         timerDuration: currentTimer.timerDuration,
