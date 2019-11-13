@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_achiver/core/presentation/res/constants.dart';
 import 'package:flutter_achiver/features/auth/data/model/user.dart';
 import 'package:flutter_achiver/features/auth/data/service/firestore_user_service.dart';
@@ -162,6 +163,11 @@ class TimerState extends ChangeNotifier {
       payload: 'timer payload',
       androidAllowWhileIdle: true,
     );
+    platformChannelSpecifics.android.autoCancel = false;
+    platformChannelSpecifics.android.ongoing = true;
+    DateTime endDT = DateTime.now().add(durationByTimerType(_currentTimer.timerType,_currentTimer.timerDuration));
+    TimeOfDay endTime = TimeOfDay.fromDateTime(endDT);
+    notifications.show(notificationId, "${timerTypeToString(_currentTimer.timerType)} session running", "Expected to end at ${endTime.hour}:${endTime.minute} ${endTime.period == DayPeriod.am ? 'am' : 'pm'}", platformChannelSpecifics);
   }
 
   cancelNotification() async {
