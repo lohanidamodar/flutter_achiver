@@ -167,7 +167,7 @@ class TimerState extends ChangeNotifier {
     platformChannelSpecifics.android.ongoing = true;
     DateTime endDT = DateTime.now().add(durationByTimerType(_currentTimer.timerType,_currentTimer.timerDuration));
     TimeOfDay endTime = TimeOfDay.fromDateTime(endDT);
-    notifications.show(notificationId, "${timerTypeToString(_currentTimer.timerType)} session running", "Expected to end at ${endTime.hour}:${endTime.minute} ${endTime.period == DayPeriod.am ? 'am' : 'pm'}", platformChannelSpecifics);
+    notifications.show(notificationId, "${timerTypeToString(_currentTimer.timerType)} session running", "Expected to end at ${endTime.hour}:${endTime.minute}", platformChannelSpecifics);
   }
 
   cancelNotification() async {
