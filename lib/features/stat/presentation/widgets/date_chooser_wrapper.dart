@@ -110,7 +110,7 @@ class _DateChooserWrapperState extends State<DateChooserWrapper> {
         ),
         IconButton(
           icon: Icon(Icons.keyboard_arrow_right),
-          onPressed: dateUtils.Utils.isSameWeek(date, today)
+          onPressed: (isWeekly(chartTimeType) && dateUtils.Utils.isSameWeek(date, today)) || (isMonthly(chartTimeType) && date.month == today.month) || (isDaily(chartTimeType) && dateUtils.Utils.isSameDay(date, today)) || (isYearly(chartTimeType) && date.year == today.year)
               ? null
               : () {
                   setState(() {
