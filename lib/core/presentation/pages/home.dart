@@ -20,6 +20,12 @@ class _HomePageState extends State<HomePage> {
     StatsTab(),
     SettingsTab(),
   ];
+  final List<String> _title = [
+    "Timer",
+    "Projects",
+    "Analytics",
+    "Settings",
+  ];
   int _currentPage;
 
   @override
@@ -42,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Achiver'),
+          title: Text(_title[_currentPage]),
         ),
         body: AnimatedSwitcher(
           duration: Duration(milliseconds: 200),
