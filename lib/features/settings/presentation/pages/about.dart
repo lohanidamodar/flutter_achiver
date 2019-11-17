@@ -108,7 +108,7 @@ class AboutPage extends StatelessWidget {
                   backgroundColor: Colors.grey,
                   child: CircleAvatar(
                       radius: 35.0,
-                      backgroundImage: NetworkImage(dev.imageUrl)))),
+                      backgroundImage: AssetImage(dev.imageUrl)))),
           SizedBox(width: 20.0),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

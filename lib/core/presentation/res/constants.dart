@@ -4,8 +4,6 @@ import 'package:flutter_achiver/features/timer/presentation/model/timer_duration
 
 const String githubRepo = "https://github.com/lohanidamodar/flutter_achiver";
 const String youtubeChannel = "https://youtube.com/c/reactbits";
-const String devDamodar =
-    'https://firebasestorage.googleapis.com/v0/b/dl-flutter-ui-challenges.appspot.com/o/img%2Fdev_damodar.jpg?alt=media&token=aaf47b41-3485-4bab-bcb6-2e472b9afee6';
 
 final Developer dev = Developer(
     name: "Damodar Lohani",

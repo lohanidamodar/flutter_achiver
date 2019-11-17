@@ -6,3 +6,5 @@ const String projectOngoingIcon = "assets/icons/ongoing.png";
 const String projectsIcon = "assets/icons/projects.png";
 const String githubIcon = "assets/icons/github.png";
 const String youtubeIcon = "assets/icons/youtube.png";
+const String devDamodar =
+    'assets/dev_damodar.jpg';
