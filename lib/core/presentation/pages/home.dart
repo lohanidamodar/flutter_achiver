@@ -49,6 +49,12 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_title[_currentPage]),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.info_outline),
+              onPressed: ()=>Navigator.pushNamed(context, 'about'),
+            )
+          ],
         ),
         body: AnimatedSwitcher(
           duration: Duration(milliseconds: 200),

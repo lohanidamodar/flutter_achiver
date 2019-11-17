@@ -6,6 +6,7 @@ import 'package:flutter_achiver/features/projects/data/services/firestore_projec
 import 'package:flutter_achiver/features/projects/presentation/pages/add_project.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/project_details.dart';
 import 'package:flutter_achiver/features/projects/presentation/pages/projects.dart';
+import 'package:flutter_achiver/features/settings/presentation/pages/about.dart';
 import 'package:flutter_achiver/features/stat/data/service/firestore_log_service.dart';
 import 'package:flutter_achiver/features/stat/presentation/pages/add_work_log.dart';
 import 'package:flutter_achiver/features/stat/presentation/pages/log_list.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
             "projects": (_) => ProjectsPage(),
             "add_project": (_) => AddProjectPage(),
             "add_work_log": (_) => AddWorkLogPage(),
+            "about":(_) => AboutPage(),
           },
           onGenerateRoute: (RouteSettings settings) {
             return MaterialPageRoute(builder: (_){
